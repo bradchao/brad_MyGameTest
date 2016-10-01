@@ -21,7 +21,8 @@ public class GameView extends View {
     private Resources res;
     private boolean isInit; // false
     private int viewW, viewH;   // 0
-    private Bitmap ball;
+    private Bitmap ballBmp;
+    private Ball ball;
     private float ballW, ballH, ballX, ballY, dx, dy;   // 0.0f
     private Matrix matrix;
     private Timer timer;
@@ -44,10 +45,12 @@ public class GameView extends View {
 
         dx = viewW / 240f; dy = viewH / 180f;
 
-        ball = BitmapFactory.decodeResource(res, R.drawable.ball);
-        ball = resizeBitmap(ball, ballW, ballH);
+        ballBmp = BitmapFactory.decodeResource(res, R.drawable.ball);
+        ballBmp = resizeBitmap(ballBmp, ballW, ballH);
+        ball = new Ball(0,0,ballBmp);
 
-        timer.schedule(new BallTask(), 1*1000, 70);
+        timer.schedule(new RefreshTask(), 0, 40);
+        timer.schedule(ball, 0, 30);
 
         isInit = true;
     }
@@ -57,18 +60,37 @@ public class GameView extends View {
         super.onDraw(canvas);
         if (!isInit) init();
 
-        canvas.drawBitmap(ball,ballX,ballY,null);
+        canvas.drawBitmap(ball.bmp,ball.x,ball.y,null);
 
     }
 
-    private class BallTask extends TimerTask {
+    private class RefreshTask extends TimerTask {
         @Override
         public void run() {
-            ballX += dx;
-            ballY += dy;
             postInvalidate();
         }
     }
+    private class Ball extends TimerTask {
+        float x, y;
+        Bitmap bmp;
+        Ball(float x, float y, Bitmap bmp){
+            this.x = x; this.y = y;
+            this.bmp = bmp;
+        }
+
+        @Override
+        public void run() {
+            if(x<0 || x+ballW>viewW){
+                dx *= -1;
+            }
+            if (y<0 || y+ballH>viewH){
+                dy *= -1;
+            }
+            x += dx;
+            y += dy;
+        }
+    }
+
 
     private Bitmap resizeBitmap(Bitmap src, float newW, float newH){
         matrix.reset();
