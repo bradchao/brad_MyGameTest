@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -14,19 +15,30 @@ import android.view.View;
  */
 public class GameView extends View {
     private Resources res;
+    private boolean isInit; // false
+    private int viewW, viewH;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         res = context.getResources();
         setBackgroundResource(R.drawable.bg);
+
+
+    }
+
+    private void init(){
+        viewW = getWidth(); viewH = getHeight();
+
+        isInit = true;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (!isInit) init();
 
-        Bitmap bg = BitmapFactory.decodeResource(res, R.drawable.bg);
-        canvas.drawBitmap(bg,-200,0,null);
+        Bitmap ball = BitmapFactory.decodeResource(res, R.drawable.ball);
+        canvas.drawBitmap(ball, 0,0,null);
 
     }
 }
