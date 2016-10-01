@@ -56,21 +56,45 @@ public class GameView extends View {
             extends GestureDetector.SimpleOnGestureListener{
         @Override
         public boolean onDown(MotionEvent e) {
+            //super.onDown(e);
             Log.d("brad", "onDown");
-            return super.onDown(e);
+            return true; //super.onDown(e);
         }
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            Log.d("brad", "onFling");
-            return super.onFling(e1, e2, velocityX, velocityY);
+        public boolean onFling(MotionEvent e1, MotionEvent e2,
+                               float vX, float vY) {
+            Log.d("brad", "onFling:" + vX + " x " + vY);
+
+            if (Math.abs(vX) > Math.abs(vY)){
+                // Left or Right
+                if (vX > 0){
+                    // Right
+                    Log.d("brad", "Right");
+                }else{
+                    // Left
+                    Log.d("brad", "Left");
+                }
+            }else {
+                // Up or Down
+                if (vY > 0){
+                    // Down
+                    Log.d("brad", "Down");
+                }else{
+                    // Up
+                    Log.d("brad", "Up");
+                }
+            }
+
+
+            return super.onFling(e1, e2, vX, vY);
         }
 
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d("brad", "onScroll");
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
+//        @Override
+//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//            Log.d("brad", "onScroll");
+//            return super.onScroll(e1, e2, distanceX, distanceY);
+//        }
     }
 
 
@@ -91,20 +115,18 @@ public class GameView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float ex = event.getX(), ey = event.getY();
-
-        if (ex>ballW && ex+ballW<viewW-ballW &&
-                ey>ballH && ey+ballH<viewH-ballH) {
-
-            Ball ball = new Ball(
-                    event.getX() - ballW / 2, event.getY() - ballH / 2,
-                    bmps[(int) (Math.random() * bmps.length)]);
-            timer.schedule(ball, 0, 30 + (int) (Math.random() * 70));
-            balls.add(ball);
-        }
-
-
-        return false;
+//        float ex = event.getX(), ey = event.getY();
+//
+//        if (ex>ballW && ex+ballW<viewW-ballW &&
+//                ey>ballH && ey+ballH<viewH-ballH) {
+//
+//            Ball ball = new Ball(
+//                    event.getX() - ballW / 2, event.getY() - ballH / 2,
+//                    bmps[(int) (Math.random() * bmps.length)]);
+//            timer.schedule(ball, 0, 30 + (int) (Math.random() * 70));
+//            balls.add(ball);
+//        }
+        return gd.onTouchEvent(event);
     }
 
     @Override
