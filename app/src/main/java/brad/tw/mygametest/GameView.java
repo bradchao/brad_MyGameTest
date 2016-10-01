@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -32,6 +33,9 @@ public class GameView extends View {
     R.drawable.ball2, R.drawable.ball3};
     private Bitmap[] bmps = new Bitmap[ballImgs.length];
 
+    private GestureDetector gd;
+
+
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -40,10 +44,35 @@ public class GameView extends View {
         timer = new Timer();
         balls = new LinkedList<>();
 
+        gd = new GestureDetector(context, new MyGDListener());
+
         setBackgroundResource(R.drawable.bg);
 
 
+
     }
+
+    private class MyGDListener
+            extends GestureDetector.SimpleOnGestureListener{
+        @Override
+        public boolean onDown(MotionEvent e) {
+            Log.d("brad", "onDown");
+            return super.onDown(e);
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            Log.d("brad", "onFling");
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d("brad", "onScroll");
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
+    }
+
 
     private void init(){
         viewW = getWidth(); viewH = getHeight();
@@ -62,11 +91,19 @@ public class GameView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Ball ball = new Ball(
-                event.getX()-ballW/2, event.getY()-ballH/2,
-                bmps[(int)(Math.random()*bmps.length)]);
-        timer.schedule(ball, 0, 30 + (int)(Math.random()*70));
-        balls.add(ball);
+        float ex = event.getX(), ey = event.getY();
+
+        if (ex>ballW && ex+ballW<viewW-ballW &&
+                ey>ballH && ey+ballH<viewH-ballH) {
+
+            Ball ball = new Ball(
+                    event.getX() - ballW / 2, event.getY() - ballH / 2,
+                    bmps[(int) (Math.random() * bmps.length)]);
+            timer.schedule(ball, 0, 30 + (int) (Math.random() * 70));
+            balls.add(ball);
+        }
+
+
         return false;
     }
 
